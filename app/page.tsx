@@ -152,7 +152,6 @@ export default function Home() {
 
           // Determine page size for text
           let page
-          let width, height
 
           if (scalingMode === 'original') {
             page = mergedPdf.addPage() // Default A4 for text in original mode as text has no inherent size? Or keep A4 default.
@@ -164,7 +163,7 @@ export default function Home() {
             page = mergedPdf.addPage(pageSize)
           }
 
-          ({ width, height } = page.getSize())
+          const { width, height } = page.getSize()
 
           const fontSize = 12
           const margin = 50
@@ -180,7 +179,7 @@ export default function Home() {
       }
 
       const mergedPdfBytes = await mergedPdf.save()
-      const blob = new Blob([mergedPdfBytes as any], { type: "application/pdf" })
+      const blob = new Blob([new Uint8Array(mergedPdfBytes)], { type: "application/pdf" })
       const url = URL.createObjectURL(blob)
 
       const link = document.createElement("a")

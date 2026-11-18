@@ -75,14 +75,22 @@ export default function Home() {
             copiedPages.forEach((page) => mergedPdf.addPage(page))
           } else {
             // Standardize PDF pages to selected size
-            const embeddedPages = await mergedPdf.embedPages(pdf.getPages())
+            // pdf-lib cannot embed a page with no content stream (blank page);
+            // those become a blank page of the target size instead.
+            const sourcePages = pdf.getPages()
+            const embeddedPages = await mergedPdf.embedPages(
+              sourcePages.filter((p) => p.node.Contents() !== undefined)
+            )
+            let embeddedIndex = 0
 
             const pageSize = scalingMode === 'a4'
               ? [595.28, 841.89] as [number, number]
               : [612, 792] as [number, number]
 
-            embeddedPages.forEach((embeddedPage) => {
+            sourcePages.forEach((sourcePage) => {
               const page = mergedPdf.addPage(pageSize)
+              if (sourcePage.node.Contents() === undefined) return
+              const embeddedPage = embeddedPages[embeddedIndex++]
               const { width: pageWidth, height: pageHeight } = page.getSize()
 
               const margin = 20

@@ -75,14 +75,22 @@ export default function Home() {
             copiedPages.forEach((page) => mergedPdf.addPage(page))
           } else {
             // Standardize PDF pages to selected size
-            const embeddedPages = await mergedPdf.embedPages(pdf.getPages())
+            // pdf-lib cannot embed a page with no content stream (blank page);
+            // those become a blank page of the target size instead.
+            const sourcePages = pdf.getPages()
+            const embeddedPages = await mergedPdf.embedPages(
+              sourcePages.filter((p) => p.node.Contents() !== undefined)
+            )
+            let embeddedIndex = 0
 
             const pageSize = scalingMode === 'a4'
               ? [595.28, 841.89] as [number, number]
               : [612, 792] as [number, number]
 
-            embeddedPages.forEach((embeddedPage) => {
+            sourcePages.forEach((sourcePage) => {
               const page = mergedPdf.addPage(pageSize)
+              if (sourcePage.node.Contents() === undefined) return
+              const embeddedPage = embeddedPages[embeddedIndex++]
               const { width: pageWidth, height: pageHeight } = page.getSize()
 
               const margin = 20
@@ -152,7 +160,6 @@ export default function Home() {
 
           // Determine page size for text
           let page
-          let width, height
 
           if (scalingMode === 'original') {
             page = mergedPdf.addPage() // Default A4 for text in original mode as text has no inherent size? Or keep A4 default.
@@ -164,7 +171,7 @@ export default function Home() {
             page = mergedPdf.addPage(pageSize)
           }
 
-          ({ width, height } = page.getSize())
+          const { width, height } = page.getSize()
 
           const fontSize = 12
           const margin = 50
@@ -180,7 +187,7 @@ export default function Home() {
       }
 
       const mergedPdfBytes = await mergedPdf.save()
-      const blob = new Blob([mergedPdfBytes as any], { type: "application/pdf" })
+      const blob = new Blob([new Uint8Array(mergedPdfBytes)], { type: "application/pdf" })
       const url = URL.createObjectURL(blob)
 
       const link = document.createElement("a")

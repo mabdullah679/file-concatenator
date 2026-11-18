@@ -14,7 +14,7 @@ What you can do: add files; hover a file row to move it up or down or remove it;
 
 Known limits: long text files are not split across pages, so they run off one page. Word and Excel files are not supported.
 
-How it is tested: npm run lint and npx tsc --noEmit check the code. npm run test:e2e builds the real production version, opens it in a real Chromium browser, adds files, merges, then reads the downloaded PDF back to check page count, page sizes and order. There are 9 such tests. They also check that no data is sent out during a merge. The first time you must run: npx playwright install chromium. Not tested: broken or password-protected PDFs, huge real files, other browsers, and drag and drop (the tests use the file picker).
+How it is tested: npm run lint and npx tsc --noEmit check the code. npm run test:e2e builds the real production version, opens it in a real Chromium browser, adds files, merges, then reads the downloaded PDF back to check page count, page sizes and order. There are 10 such tests. They also check that no data is sent out during a merge. The first time you must run: npx playwright install chromium. Not tested: broken or password-protected PDFs, huge real files, other browsers, and drag and drop (the tests use the file picker).
 
 Automatic checks on GitHub: lint, type check, the browser tests, and a scan for leaked passwords.
 

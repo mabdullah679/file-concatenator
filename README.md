@@ -37,7 +37,7 @@ Limits: text is drawn with one font size (12 pt) and is not paginated, so long t
 
 ## Tests
 - `npm run lint` and `npx tsc --noEmit`: static checks.
-- `npm run test:e2e`: 9 Playwright tests against the production build (`npm run build` then `next start` on port 3100). They cover disabled/enabled merge button, original/A4/Letter page sizes and counts, reorder/remove/clear, merge order, the 100 MB limit, and no non-GET requests during a merge. No external services needed; first run needs `npx playwright install chromium`.
+- `npm run test:e2e`: 10 Playwright tests against the production build (`npm run build` then `next start` on port 3100). They cover disabled/enabled merge button, original/A4/Letter page sizes and counts, reorder/remove/clear, merge order, blank PDF pages in A4 mode, the 100 MB limit, and no non-GET requests during a merge. No external services needed; first run needs `npx playwright install chromium`.
 - Not covered: password-protected or corrupt PDFs, very large real-world files, other browsers than Chromium, drag-and-drop gestures (uploads go through the file input).
 
 CI: [.github/workflows/ci.yml](.github/workflows/ci.yml) runs lint, type check, the e2e suite, and a gitleaks scan.
